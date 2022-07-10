@@ -1,0 +1,39 @@
+{
+   "db": {
+      "360212994619211789": {
+         "dinheiro": 21964,
+         "time": 20211024
+      },
+      "235076578223063041": {
+         "dinheiro": 0,
+         "time": 202275
+      },
+      "360929596197175319": {
+         "dinheiro": 78,
+         "time": 20211019
+      },
+      "319179068442411008": {
+         "dinheiro": 1723,
+         "time": 202274
+      }
+   },
+   "coisasdalojinha": {
+      "arma": {
+         "description": "Usado pra assaltar e ganhar mais dinheiro",
+         "preco": 10000,
+         "compradopor": [
+            "360212994619211789"
+         ]
+      },
+      "alianca": {
+         "description": "Uma grande e valiosa alianca para voce casar com quem quiser",
+         "preco": 6000,
+         "compradopor": [
+            "360212994619211789"
+         ]
+      }
+   },
+   "namorecos": {
+      "360212994619211789": "868305867978711140"
+   }
+}

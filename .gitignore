@@ -1,0 +1,4 @@
+.env
+bot.todo
+__pycache__
+cogs\__pycache__
