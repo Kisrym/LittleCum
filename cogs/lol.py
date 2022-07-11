@@ -17,7 +17,7 @@ emblems = {
             }
 
 load_dotenv()
-API_KEY = os.getenv('RGAPI-ce428226-a1c4-4aee-a56e-b9a12c8c41e2')
+API_KEY = os.getenv('API_RIOT_KEY')
 
 class Lol(commands.Cog):
     def __init__(self, bot):
