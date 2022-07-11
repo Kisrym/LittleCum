@@ -32,8 +32,6 @@ class Nsfw(commands.Cog):
                 except IndexError: await ctx.send(f"<@{ctx.author.id}> tag não encontrada")
         else:
             await ctx.send("vai tomar no cu")
-    
 
-    
 def setup(bot):
     bot.add_cog(Nsfw(bot))

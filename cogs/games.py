@@ -141,29 +141,29 @@ class Games(commands.Cog):
         +---+
         |   |
         O   |
-        /|   |
+       /|   |
             |
             |
         =========''', '''
         +---+
         |   |
         O   |
-        /|\  |
+       /|\  |
             |
             |
         =========''', '''
         +---+
         |   |
         O   |
-        /|\  |
-        /    |
+       /|\  |
+       /    |
             |
         =========''', '''
         +---+
         |   |
         O   |
-        /|\  |
-        / \  |
+       /|\  |
+       / \  |
             |
         =========''']
         
@@ -244,6 +244,75 @@ class Games(commands.Cog):
             await channel.delete()
         else:
             await ctx.send("vai se foder arrombado")
+        
+    @commands.command(aliases=['ppt', 'jokenpo'], help="Jogo de Jokenpo fodase", description=f"titulo;Pedra Papel Tesoura;aliases;pedrapapeltesoura, ppt, jokenpo;description;Jogo de Jokenpo normal;exemplo;=ppt")
+    async def pedrapapeltesoura(self, ctx):
+        players = []
+        jogadas = []
+        icones = {
+            "pedra":"👊",
+            "papel":"🖐️",
+            "tesoura":"✌️"
+        }
+        vez = 0
+        
+        info = await ctx.send(embed=discord.Embed(title="Pedra Papel Tesoura", description="Para participar, clique no botão abaixo."), components=[Button(label="Participar", style=3)])
+        res = await self.bot.wait_for('button_click', check=lambda i: i.channel == ctx.channel and i.author.id != ctx.author.id, timeout=10)
+        
+        if res.component.label == "Participar":
+            players.append(ctx.author.id)
+            players.append(res.author.id)
+        
+        _ = "\n"
+        
+        await info.edit(embed=discord.Embed(title="Pedra Papel Tesoura", description=f"Jogo iniciado!\nParticipantes:\n{_.join([f'<@{x}>' for x in players])}"), components="")
+        
+        jogo = await ctx.send(embed=discord.Embed(title="Pedra Papel Tesoura", description=f"Vez de <@{players[0]}>. Espere a jogada."), components = [[
+            Button(label="👊", style=1),
+            Button(label="🖐️", style=1),
+            Button(label="✌️", style=1)
+        ]])
+        
+        res = await self.bot.wait_for('button_click', check=lambda i: i.channel == ctx.channel and i.author.id == players[vez], timeout=10)
+        
+        if res.component.label == "👊":
+            jogadas.append("pedra")
+        elif res.component.label == "🖐️":
+            jogadas.append("papel")
+        elif res.component.label == "✌️":
+            jogadas.append("tesoura")
+        
+        vez += 1
+        
+        await jogo.edit(embed=discord.Embed(title="Pedra Papel Tesoura", description=f"Vez de <@{players[1]}>. Espere a jogada."), components = [[
+            Button(label="👊", style=1),
+            Button(label="🖐️", style=1),
+            Button(label="✌️", style=1)
+        ]])
+        
+        res = await self.bot.wait_for('button_click', check=lambda i: i.channel == ctx.channel and i.author.id == players[vez])
+        
+        if res.component.label == "👊":
+            jogadas.append("pedra")
+        elif res.component.label == "🖐️":
+            jogadas.append("papel")
+        elif res.component.label == "✌️":
+            jogadas.append("tesoura")
+        
+        
+        if jogadas[0] == jogadas[1]:
+            await jogo.edit(embed=discord.Embed(title="Pedra Papel Tesoura", description=f"**<:trollface:843147626219307029> Empate <:trollface:843147626219307029>**!\n\n**Jogadas:**\n**{jogadas[0].capitalize()} {icones.get(jogadas[0])}**: <@{players[0]}>\n**{jogadas[1].capitalize()} {icones.get(jogadas[1])}:** <@{players[1]}>"), components="")
+        
+        if jogadas[0] == "pedra" and jogadas[1] == "tesoura":
+            await jogo.edit(embed=discord.Embed(title="Pedra Papel Tesoura", description=f"Vencedor: <@{players[0]}> 🏆!\n\n**Jogadas:**\n**{jogadas[0].capitalize()} {icones.get(jogadas[0])}:** <@{players[0]}>\n**{jogadas[1].capitalize()} {icones.get(jogadas[1])}:** <@{players[1]}>"), components="")
+        elif jogadas[1] == "pedra" and jogadas[0] == "tesoura":
+            await jogo.edit(embed=discord.Embed(title="Pedra Papel Tesoura", description=f"Vencedor: <@{players[1]}> 🏆!\n\n**Jogadas:**\n**{jogadas[0].capitalize()} {icones.get(jogadas[0])}:** <@{players[0]}>\n**{jogadas[1].capitalize()} {icones.get(jogadas[1])}:** <@{players[1]}>"), components="")
+        
+        if jogadas[0] == "papel" and jogadas[1] == "pedra":
+            await jogo.edit(embed=discord.Embed(title="Pedra Papel Tesoura", description=f"Vencedor: <@{players[0]}> 🏆!\n\n**Jogadas:**\n**{jogadas[0].capitalize()} {icones.get(jogadas[0])}:** <@{players[0]}>\n**{jogadas[1].capitalize()} {icones.get(jogadas[1])}:** <@{players[1]}>"), components="")
+        elif jogadas[1] == "papel" and jogadas[0] == "pedra":
+            await jogo.edit(embed=discord.Embed(title="Pedra Papel Tesoura", description=f"Vencedor: <@{players[1]}> 🏆!\n\n**Jogadas:**\n**{jogadas[0].capitalize()} {icones.get(jogadas[0])}:** <@{players[0]}>\n**{jogadas[1].capitalize()} {icones.get(jogadas[1])}:** <@{players[1]}>"), components="")
 
+            
 def setup(bot):
     bot.add_cog(Games(bot))
