@@ -1,6 +1,6 @@
 import requests, os
 from dotenv import load_dotenv
-from func import json_read, json_dump
+from functions.func import json_read, json_dump
 
 load_dotenv()
 database = os.getenv("DATABASE")

@@ -12,7 +12,7 @@ class Tasks(commands.Cog):
     async def on_ready(self):
         self.guizinho.start()
         self.birthday.start()
-        self.dump.start()
+        self.export.start()
         print("[*]Tasks Cog Carregado")
     
     @tasks.loop(hours=8)
@@ -36,4 +36,4 @@ class Tasks(commands.Cog):
         exportar_database()
 
 def setup(bot):
-    bot.add_cog(Tasks(bot)) 
+    bot.add_cog(Tasks(bot))
