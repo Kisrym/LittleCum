@@ -2,6 +2,7 @@ from discord.ext import commands
 import discord, os
 from dotenv import load_dotenv
 from functions.func import json_read
+from functions.database import importar_database
 
 bot = commands.Bot(command_prefix='=', case_insensitive = True)
 bot.remove_command("help")
@@ -9,6 +10,7 @@ bot.remove_command("help")
 @bot.event
 async def on_ready():
     print(f"[Nome] {bot.user.name}\n[I] {bot.user.id}\n")
+    importar_database()
     
 @bot.command()
 async def help(ctx, cog="all"):

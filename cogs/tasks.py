@@ -1,7 +1,8 @@
 import requests, asyncio
 from discord.ext import commands, tasks
 from datetime import date
-from functions.func import json_read, json_dump
+from functions.func import json_read
+from functions.database import exportar_database
 
 class Tasks(commands.Cog):
     def __init__(self, bot):
@@ -30,24 +31,9 @@ class Tasks(commands.Cog):
             await channel.purge(limit=1)
 
     @tasks.loop(minutes=10)
-    async def dump(self): #! IMPORT AS INFORMAÇÕES DA DATABASE
+    async def export(self): #! IMPORT AS INFORMAÇÕES DA DATABASE
         await asyncio.sleep(5)
-        r = requests.get("https://littlecum-39790-default-rtdb.firebaseio.com/.json").json()
-        config = json_read(r"db\config.json")
-        commands = json_read(r"db\commands.json")
-
-        r['config'] = config
-        r['commands'] = commands
-
-        r = str(r).replace("\'", "\"")
-
-        requests.patch(r"https://littlecum-39790-default-rtdb.firebaseio.com/.json", data=f'{r}')
-
-    @tasks.loop(minutes=10)
-    async def read(self): #! LÊ OS ITENS DA DATABASE
-        r = requests.get("https://littlecum-39790-default-rtdb.firebaseio.com/.json").json()
-        json_dump(r"db\config.json", r['config'])
-        json_dump(r"db\commands.json", r['commands'])
+        exportar_database()
 
 def setup(bot):
     bot.add_cog(Tasks(bot)) 
