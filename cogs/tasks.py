@@ -10,7 +10,7 @@ class Tasks(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.guizinho.start()
+        self.annoying.start()
         self.birthday.start()
         self.export.start()
         print("[*]Tasks Cog Carregado")
@@ -22,16 +22,16 @@ class Tasks(commands.Cog):
             if f"{date.today().day}/{date.today().month}" == v:
                 await self.bot.get_channel(838429983865045002).send(f"Feliz aniversário <@{c}>!")
 
-    @tasks.loop(minutes=10) #? minutes=10
-    async def guizinho(self):
-        if json_read(r"db\config.json")["guizinho"] == "True":
+    @tasks.loop(minutes = 1)
+    async def annoying(self):
+        if json_read(r"db\config.json")["annoying"]["condition"] == "True":
             await asyncio.sleep(2)
             channel = self.bot.get_channel(838429983865045002)
-            await channel.send("<@305852325346541568>")
+            await channel.send("<@" + json_read(r'db\config.json')['annoying']['user'] + ">")
             await channel.purge(limit=1)
 
     @tasks.loop(minutes=10)
-    async def export(self): #! IMPORT AS INFORMAÇÕES DA DATABASE
+    async def export(self):
         await asyncio.sleep(5)
         exportar_database()
 

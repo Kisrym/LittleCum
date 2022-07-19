@@ -108,18 +108,30 @@ class Admin(commands.Cog):
             json_dump(r'db\commands.json', data)
             json_dump(r'db\config.json', config)
 
-    @commands.command(help="Ativa/desativa a task 'guizinho'", description="titulo;Guizinho;aliases;gui;description;Ativa ou desativa a menção ao guizinho;exemplo;=gui <True/False>")
-    async def gui(self, ctx, condition):
+    @commands.command(help="Configura a task 'annoying'", aliases = ['gui'], description="titulo;Annoying;aliases;gui, annoying;description;Configura a task;exemplo;=gui")
+    async def annoying(self, ctx):
         if ctx.author.id in json_read(r'db\config.json')['owner']:
             data = json_read(r'db\config.json')
-            if condition.capitalize() == 'True':
-                data['guizinho'] = "True"
-                await ctx.message.add_reaction('✅')
-            elif condition.capitalize() == 'False':
-                data['guizinho'] = "False"
-                await ctx.message.add_reaction('✅')
-            else:
-                await ctx.send("Só é aceito True ou False")
+
+            embed = discord.Embed(title="Annoying", description="Informações:")
+            embed.add_field(name= "Usuário:", value = data['annoying']['user'], inline = False)
+            embed.add_field(name = "Ligado", value = data['annoying']['condition'], inline = False)
+            mensagem = await ctx.send(embed = embed, components = [Button(label = "Adicionar usuário", style = 3), Button(label = data['annoying']['condition'], style = 4, custom_id = "Ligado")])
+
+            res = await self.bot.wait_for('button_click', check=lambda i: i.author.id == ctx.author.id and i.channel == ctx.message.channel)
+
+            if res.component.label == "Adicionar usuário":
+                await mensagem.edit(embed = discord.Embed(title = "Annoying", description = "Marque o usuário: "), components = "")
+                person = await self.bot.wait_for('message', check=lambda m: m.author == ctx.author and m.channel == ctx.message.channel and len(m.mentions) > 0)
+
+                data['annoying']['user'] = str(person.mentions[0].id)
+                await mensagem.edit(embed = discord.Embed(title = "Annoying", description = "Usuário adicionado com sucesso."), components = "")
+
+            elif res.component.custom_id == "Ligado":
+                data['annoying']['condition'] = "True" if data['annoying']['condition'] == "False" else "False"
+                    
+                await mensagem.edit(embed = discord.Embed(title = "Annoying", description = "Situação atualizada."), components = "")
+
             json_dump(r'db\config.json', data)
 
 def setup(bot):

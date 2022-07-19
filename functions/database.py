@@ -8,9 +8,9 @@ database = os.getenv("DATABASE")
 def exportar_database():
     data = {}
 
-    data['config'] = json_read(r"C:\Users\kaios\Desktop\Storage\Programação\projetos\LittleCum\db\config.json")
-    data['commands'] = json_read(r"C:\Users\kaios\Desktop\Storage\Programação\projetos\LittleCum\db\commands.json")
-    data['moneycum'] = json_read(r"C:\Users\kaios\Desktop\Storage\Programação\projetos\LittleCum\db\moneycum.json")
+    data['config'] = json_read(r"db\config.json")
+    data['commands'] = json_read(r"db\commands.json")
+    data['moneycum'] = json_read(r"db\moneycum.json")
 
     data = str(data).replace("\'", "\"")
 
