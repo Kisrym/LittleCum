@@ -54,11 +54,7 @@ async def help(ctx, cog="all"):
     embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/868305867978711140/e5db8fe0c9ea6f4818f54b2b00ea35d8.webp?size=80")
     embed.set_footer(text="Use =help <nome do comando> para informações mais detalhadas.")
     await ctx.message.add_reaction("✅")
-    user = await bot.fetch_user(ctx.message.author.id)
-    try:
-        await user.send(embed=embed)
-    except:
-        await ctx.send(embed=embed)
+    await ctx.send(embed=embed)
 
 
 for f in os.listdir('./cogs'):
