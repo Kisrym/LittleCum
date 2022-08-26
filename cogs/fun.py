@@ -93,18 +93,14 @@ class Fun(commands.Cog):
         titulo = soup.find_all('h1')[0].get_text()
         texto = soup.find_all('p')[0].get_text()
 
-        for f in os.listdir("mbti"): ## r"data\mbti"
-            if f.endswith('.png'):
-                if f == f"{person['id']}.png":
-                    _ = "\\"
-                    file = discord.File(f"mbti\{f.replace(_, '')}", filename='im.png')
-
         if texto == [x for x in soup.find_all('blockquote')[0].get_text().split('\n') if x != ''][0]:
             texto = soup.find_all('p')[1].get_text()
 
+        file = discord.File(BytesIO(requests.get(f"https://firebasestorage.googleapis.com/v0/b/media-storage-960d5.appspot.com/o/{person['id']}.png?alt=media&token=48a02b7f-407b-4320-8476-1d0ff05d194c").content), filename = "im.png")
+
         embed = discord.Embed(title=f" {titulo}{person['id'].upper()}", description=texto)
         embed.set_thumbnail(url="attachment://im.png")
-        await ctx.send(file=file, embed=embed)
+        await ctx.send(file = file, embed=embed)
 
 def setup(bot):
     bot.add_cog(Fun(bot))
