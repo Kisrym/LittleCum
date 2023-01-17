@@ -129,7 +129,8 @@ class Commands(commands.Cog):
     async def translate(self, ctx, language, *, text):
         from googletrans import Translator
         try:
-            await ctx.send(f"📄 **|** <@{ctx.author.id}> {Translator().translate(text, dest=language).text}")
+            tradutor = Translator()
+            await ctx.send(f"📄 **|** <@{ctx.author.id}> {tradutor.translate(text, dest=language).text}")
         except ValueError:
             await ctx.send(f"<@{ctx.author.id}> Língua inválida.")
 
