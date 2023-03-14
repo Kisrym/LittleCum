@@ -1,11 +1,9 @@
 from discord.ext import commands
-from discord_components import DiscordComponents
 from functions.func import json_read
 
 class Voice(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        DiscordComponents(bot)
         self.OWNER = json_read(r"db\config.json")["owner"]
 
     @commands.Cog.listener()
@@ -20,5 +18,5 @@ class Voice(commands.Cog):
                 await member.move_to(None)
 
 
-def setup(bot):
-    bot.add_cog(Voice(bot))
+async def setup(bot):
+    await bot.add_cog(Voice(bot))

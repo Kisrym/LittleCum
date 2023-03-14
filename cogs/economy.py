@@ -129,5 +129,5 @@ class Economy(commands.Cog):
         else:
             await ctx.send('vai tomar no cu')
 
-def setup(bot:commands.Bot):
-    bot.add_cog(Economy(bot))
+async def setup(bot:commands.Bot):
+    await bot.add_cog(Economy(bot))

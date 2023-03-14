@@ -35,5 +35,5 @@ class Tasks(commands.Cog):
         await asyncio.sleep(5)
         exportar_database()
 
-def setup(bot):
-    bot.add_cog(Tasks(bot))
+async def setup(bot):
+    await bot.add_cog(Tasks(bot))

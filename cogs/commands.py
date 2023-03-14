@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
-from discord_components import Button, DiscordComponents
 from functions.func import blacklist, json_read, json_dump
+from functions.buttons import BlacklistButtons
 
 data = json_read(r"db\config.json")
 OWNER = data["owner"]
@@ -9,7 +9,6 @@ OWNER = data["owner"]
 class Commands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        DiscordComponents(bot)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -17,32 +16,19 @@ class Commands(commands.Cog):
 
     @commands.command(help="Acessa a blacklist", description="titulo;Blacklist;aliases;blacklist;description;Gerencia a Blacklist;exemplo;=blacklist")
     async def blacklist(self, ctx):
-        json_read(r"db\config.json")
+        config = json_read(r"db\config.json")
         embed = discord.Embed(title="Blacklist")
-        for k, v in data['blacklist'].items():
+        for k, v in config['blacklist'].items():
             embed.add_field(name=k, value=v, inline=False)
-        message = await ctx.send(embed=embed, components=[
-            [Button(label="Adicionar", style=3), Button(label="Remover", style=4)]
-        ])
-        interaction = await self.bot.wait_for('button_click', check=lambda i: i.author.id in data['owner'])
-        if interaction.component.label == "Adicionar":
-            await message.edit(embed=discord.Embed(title="Adicionar", description="Marque quem queres colocar"), components="")
-            person = await self.bot.wait_for('message', check=lambda m: m.author == ctx.author and m.channel == ctx.message.channel and len(m.mentions) > 0)
-            await message.edit(embed=discord.Embed(title="Sucesso", description=f"Usuário <@{person.mentions[0].id}> adicionado com sucesso"))
-            data['blacklist'][person.mentions[0].name] = person.mentions[0].id
-        elif interaction.component.label == "Remover":
-            await message.edit(embed=discord.Embed(title="Remover", description="Marque quem queres remover"), components="")
-            person = await self.bot.wait_for('message', check=lambda m: m.author == ctx.author and m.channel == ctx.message.channel and len(m.mentions) > 0)
-            await message.edit(embed=discord.Embed(title="Sucesso", description=f"Usuário <@{person.mentions[0].id}> removido com sucesso"))
-            del data['blacklist'][person.mentions[0].name]
-        json_dump(r"db\config.json", data)
+        
+        view = BlacklistButtons()
+        await ctx.send(embed=embed, view=view)
 
     @commands.command(help="Limpa as mensagens em um limite específico.", description="titulo;Clear;aliases;clear;description;Limpa as mensagens em um limite específico.;exemplo;=clear 10")
     async def clear(self, ctx, range):
         if ctx.author.id not in blacklist():
             if int(range) <= 100:
                 await ctx.channel.purge(limit=int(range)+1)
-                #// await ctx.send(f"{range} mensagens excluídas por <@{ctx.author.id}>")
                 await ctx.send(f"🧼 **|** {range} mensagens excluída(s) por <@{ctx.author.id}>")
             else:
                 await ctx.send("Range inválido, apenas valores abaixo de 100")
@@ -134,5 +120,5 @@ class Commands(commands.Cog):
         except ValueError:
             await ctx.send(f"<@{ctx.author.id}> Língua inválida.")
 
-def setup(bot):
-    bot.add_cog(Commands(bot))
+async def setup(bot):
+    await bot.add_cog(Commands(bot))

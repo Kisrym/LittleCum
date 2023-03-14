@@ -122,5 +122,5 @@ class Lol(commands.Cog):
         embed = discord.Embed(title="Rotação grátis", description='**-  {}**'.format("\n - ".join([champ(x, False) for x in r])))
         await ctx.send(embed=embed)
 
-def setup(bot):
-    bot.add_cog(Lol(bot))
+async def setup(bot):
+    await bot.add_cog(Lol(bot))

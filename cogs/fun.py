@@ -102,5 +102,5 @@ class Fun(commands.Cog):
         embed.set_thumbnail(url="attachment://im.png")
         await ctx.send(file = file, embed=embed)
 
-def setup(bot):
-    bot.add_cog(Fun(bot))
+async def setup(bot):
+    await bot.add_cog(Fun(bot))

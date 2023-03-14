@@ -48,5 +48,5 @@ class Dicionario(commands.Cog):
         await ctx.send(embed=discord.Embed(title=word, description="\n".join([x for x in a[:range]])))  
 
     
-def setup(bot):
-    bot.add_cog(Dicionario(bot))
+async def setup(bot):
+    await bot.add_cog(Dicionario(bot))

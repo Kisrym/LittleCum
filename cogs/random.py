@@ -85,5 +85,5 @@ class Random(commands.Cog):
             await ctx.send("vai tomar no cu")
         
 
-def setup(bot):
-    bot.add_cog(Random(bot))
+async def setup(bot):
+    await bot.add_cog(Random(bot))

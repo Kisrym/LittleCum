@@ -1,10 +1,10 @@
 from discord.ext import commands
-import discord, os
+import discord, os, asyncio
 from dotenv import load_dotenv
 from functions.func import json_read
 from functions.database import importar_database
 
-bot = commands.Bot(command_prefix='=', case_insensitive = True)
+bot = commands.Bot(command_prefix='=', case_insensitive = True, intents=discord.Intents.all())
 bot.remove_command("help")
 
 @bot.event
@@ -57,9 +57,15 @@ async def help(ctx, cog="all"):
     await ctx.send(embed=embed)
 
 
-for f in os.listdir('./cogs'):
-    if f.endswith('.py'):
-        bot.load_extension(f'cogs.{f[:-3]}')
+async def load_extension():
+    for f in os.listdir('./cogs'):
+        if f.endswith('.py'):
+            await bot.load_extension(f'cogs.{f[:-3]}')
 
-load_dotenv()
-bot.run(os.getenv('TOKEN'))
+async def main():
+    load_dotenv()
+    async with bot:
+        await load_extension()
+        await bot.start(os.getenv('TOKEN'))
+
+asyncio.run(main())
