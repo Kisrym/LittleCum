@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from functions.func import json_read
 from functions.database import importar_database
 
+discord.utils.setup_logging()
+
 bot = commands.Bot(command_prefix='=', case_insensitive = True, intents=discord.Intents.all())
 bot.remove_command("help")
 

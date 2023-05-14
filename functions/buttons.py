@@ -21,14 +21,11 @@ class OwnerButtons(discord.ui.View):
 
         await interaction.response.edit_message(embed=discord.Embed(title="Admin", description=f'{des}\nEscreva o id de quem você quer remover: '))
         person = await interaction.client.wait_for('message', check=lambda m: m.author == interaction.user and m.channel == interaction.channel)
-        print(person)
 
         if int(person.content) == 235076578223063041:
-            print("erro: dono")
             return
         
         if int(person.content) not in data["owner"]:
-            print("erro: outro")
             return
 
         await interaction.message.edit(embed=discord.Embed(title="Sucesso", description=f"Usuário <@{person.content}> removido com sucesso"))
@@ -153,58 +150,33 @@ class BlacklistButtons(discord.ui.View):
 
         json_dump(r'db\config.json', config)
 
-class TictactoeButtons(discord.ui.View):
-    @discord.ui.button(label = "Participar", style=discord.ButtonStyle.success)
-    async def participar(self, interaction: discord.Interaction, button: discord.ui.Button):
-        pass
-
 class MusicButtons(discord.ui.View):
-    def __init__(self, voice, state, new_link, client, video):
-        self.voice = voice
-        self.state = state
-        self.new_link = new_link
-        self.client = client
-        self.video
+    def __init__(self, voice_client, playlist):
+        super().__init__()
+        self.voice_client = voice_client
+        self.playlist = playlist
+    
+    @discord.ui.button(label = "Pause", style = discord.ButtonStyle.blurple)
+    async def pause_resume(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if self.voice_client.is_paused():
+            button.label = "Pause"
+            button.style = discord.ButtonStyle.blurple
 
-    def embed(self, title="Tocando agora ♪"):
-        embed = discord.Embed(title=title, description=f"{self.title}", colour=discord.Color.dark_purple(), url=self.video_url)
-        embed.set_footer(text=f"Requisitada por {self.requested_by}")
-        embed.set_author(name=self.requested_by.name, icon_url=self.requested_by.avatar_url)
-        embed.set_thumbnail(url=self.thumbnail)
-        return embed
+            self.voice_client.resume()
+            await interaction.response.edit_message(view = self)
 
-    @discord.ui.button(label = "Pause", style=discord.ButtonStyle.blurple)
-    async def pause(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.voice.pause()
-        button.style = discord.ButtonStyle.success
-        button.label = "Resume"
+        else:
+            button.label = "Resume"
+            button.style = discord.ButtonStyle.success
 
-        await interaction.response.edit_message(embed=self.video.embed())
-
-    @discord.ui.button(label = "Resume", style=discord.ButtonStyle.success)
-    async def resume(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.voice.resume()
-        button.style = discord.ButtonStyle.blurple
-        button.label = "Pause"
-
-        await interaction.response.edit_message(embed = self.video.embed())
-
-    @discord.ui.button(label = "Stop", style=discord.ButtonStyle.danger)
+            self.voice_client.pause()
+            await interaction.response.edit_message(view = self)
+    
+    @discord.ui.button(label = "Stop", style = discord.ButtonStyle.danger)
     async def stop(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await self.client.disconnect()
-        self.state.playlist = []
-        self.state.now_playing = None
-        
-        interaction.response.edit_message(None)
+        await self.voice_client.disconnect()
+        self.playlist = []
 
-    @discord.ui.button(label = "Skip", style=discord.ButtonStyle.secondary)
+    @discord.ui.button(label = "Skip", style = discord.ButtonStyle.gray)
     async def skip(self, interaction: discord.Interaction, button: discord.ui.Button):
-        try:
-            video = Video(self.new_link, interaction.user)
-        except:
-            pass
-        
-        self.client.stop()
-        await interaction.response.edit_message(None)
-        await interaction.channel.send(embed=self.video.embed(), delete_after=video.information("duration"))
-        self.new_link.pop(0)
+        self.voice_client.stop()
